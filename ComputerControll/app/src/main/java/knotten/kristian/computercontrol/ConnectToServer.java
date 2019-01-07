@@ -1,9 +1,10 @@
-package knotten.kristian.computercontroll;
+package knotten.kristian.computercontrol;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.view.View;
@@ -51,6 +52,7 @@ public class ConnectToServer extends AppCompatActivity {
 
         // Lag ein toast som skal bli brukt til og gi brukaren beskjeder
         messageToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        messageToast.setGravity(Gravity.TOP, 0, 300);
     }
 
     //Sjekk om IP adressa og porten er ein valid input

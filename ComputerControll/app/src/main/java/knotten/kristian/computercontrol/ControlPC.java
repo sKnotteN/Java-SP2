@@ -1,9 +1,10 @@
-package knotten.kristian.computercontroll;
+package knotten.kristian.computercontrol;
 
 // Importer pakkar som blir brukt
 import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ControlPC extends AppCompatActivity {
 
@@ -27,6 +30,9 @@ public class ControlPC extends AppCompatActivity {
     // Variabel med referanse til toast som kan gi beskjed til brukar
     Toast messageToast;
 
+    // Sette opp ein executor til og handtere trådar som skal brukast til og sende meldingar til server
+    ExecutorService messageQueue = Executors.newFixedThreadPool(5);
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,7 @@ public class ControlPC extends AppCompatActivity {
 
         // Lag ein toast som skal bli brukt til og gi beskjedar til brukaren
         messageToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        messageToast.setGravity(Gravity.TOP, 0, 300);
 
         // Få referanse til serveren frå ConnectToServer klassa
         ConnectToServer connectToServer = new ConnectToServer();
@@ -94,13 +101,10 @@ public class ControlPC extends AppCompatActivity {
                 case MotionEvent.ACTION_MOVE:
                     controlEvents(event);
                     break;
-
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        lastX = (int)event.getX();
-                        lastY = (int)event.getY();
-                        break;
+                case MotionEvent.ACTION_CANCEL:
+                    lastX = (int)event.getX();
+                    lastY = (int)event.getY();
+                    break;
                 }
 
                 return true;
@@ -119,10 +123,6 @@ public class ControlPC extends AppCompatActivity {
         // og flipp verdiane for og match x og y på pcen
         Integer rel_x = ((lastX - newX) * 2) * -1;
         Integer rel_y = ((lastY - newY) * 2) * -1;
-
-        System.out.println("Test lastx: " + lastX + "  lasty: " + lastY);
-        System.out.println("Test newx: " + newX + "  newy: " + newY);
-        System.out.println("Test rel x: " + rel_x + "  rel y: " + rel_y);
 
         lastX = newX;
         lastY = newY;
@@ -175,6 +175,21 @@ public class ControlPC extends AppCompatActivity {
 
         Thread t = new Thread(r);
         t.start();
+
+
+
+//        messageQueue.submit(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    oStream.writeUTF(message);
+//                } catch (IOException e) {
+//                    disconnected();
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
     }
 
     // Lukker og tilkoplinga og aktiviteten
@@ -190,13 +205,16 @@ public class ControlPC extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     // Legg til at socketen skal bli disconnected når ein trykker på tilbake knappen
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         disconnected();
     }
+
+
+
 }

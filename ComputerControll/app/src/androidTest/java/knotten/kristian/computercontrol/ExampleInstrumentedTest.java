@@ -1,4 +1,4 @@
-package knotten.kristian.computercontroll;
+package knotten.kristian.computercontrol;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

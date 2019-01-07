@@ -11,7 +11,7 @@
         android:id="@+id/leftButton"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:background="@android:color/darker_gray"
         android:text="Left"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
     <View
         android:id="@+id/mouseView"
         android:layout_width="wrap_content"
-        android:layout_height="621dp"
+        android:layout_height="670dp"
         android:layout_marginBottom="76dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
